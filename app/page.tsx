@@ -1,101 +1,91 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useState } from "react";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
+const Page = () => {
+  const [otp, setOtp] = useState(""); 
+  const [error, setError] = useState(false); 
+
+  const handleVerify = () => {
+    if (otp.length !== 5) {
+      setError(true); 
+    } else {
+      setError(false); 
+      alert("Code Verified!"); // Placeholder for actual functionality
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="bg-ksbl bg-center bg-fixed h-screen bg-cover flex items-center justify-center">
+      <div className="bg-[#05274F]/80 px-10 py-12 border-[3px] rounded-xl border-[#FBA733] backdrop-blur-lg max-w-[450px] flex flex-col items-center">
+        {/* Heading */}
+        <h2 className="text-white text-[26px] font-semibold text-center">
+          Check your email
+        </h2>
+        <h2 className="text-white text-[14px] font-normal leading-normal mt-2 text-center">
+          We sent a 5-digit code to B04...@outlook.com.
+          </h2>
+          <h2 className="text-white text-[14px] font-normal leading-normal mt-2 text-center">
+           Enter the code in the email sent.
+        </h2>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+        {/* Enter Code Section */}
+        <h2 className="mt-8 text-white text-[16px] font-semibold text-center">
+          Enter Code
+        </h2>
+
+        {/* OTP Input Component */}
+        <InputOTP
+          maxLength={5} // Adjusted for 5-digit code
+          pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+          value={otp} 
+          onChange={(value) => setOtp(value)} 
+        >
+          <InputOTPGroup className="flex gap-4 mt-6">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <InputOTPSlot
+                key={index}
+                index={index}
+                className={`w-12 h-12 bg-white text-black border rounded-[5px] text-center text-lg shadow-sm focus:outline-none ${
+                  error ? "border-2 border-red-500" : "border-gray-300"
+                }`}
+              />
+            ))}
+          </InputOTPGroup>
+        </InputOTP>
+
+        {/* Error Message */}
+        {error && (
+          <p className="text-red-500 text-sm mt-3 text-center">Invalid Code. Please try again.</p>
+        )}
+
+        {/* Verify Button */}
+        <button
+          onClick={handleVerify}
+          disabled={otp.length !== 5} // Disabled until 5 digits are entered
+          className={`mt-6 px-6 py-2 bg-[#FBA733] text-white rounded-md w-full text-center flex justify-center items-center shadow-lg font-medium ${
+            otp.length !== 5 ? "opacity-50 cursor-not-allowed" : "hover:bg-[#e6a531] cursor-pointer"
+          }`}
+        >
+          Verify Code
+        </button>
+
+        {/* Resend Email */}
+        <p className="text-white text-sm mt-6 text-center">
+          Haven't gotten the email yet?{" "}
+          <a href="#" className="text-[#FBA733] hover:underline">
+            Resend Email
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </p>
+      </div>
     </div>
   );
-}
+};
+
+export default Page;
